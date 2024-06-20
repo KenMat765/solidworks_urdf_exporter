@@ -339,14 +339,7 @@ namespace SW2URDF.URDFExport
                 FindSWSaveAttribute(model, name);
             if (existingAttribute != null)
             {
-                // return existingAttribute;
-                MessageBox.Show("exist");
-                existingAttribute.Delete(true);
-                // return existingAttribute;
-            }
-            else
-            {
-                MessageBox.Show("not exist");
+                return existingAttribute;
             }
 
             int ConfigurationOptions = (int)swInConfigurationOpts_e.swAllConfiguration;
@@ -381,14 +374,9 @@ namespace SW2URDF.URDFExport
         private static void SaveDataToModelDoc(SldWorks swApp, ModelDoc2 model,
             string data)
         {
-            logger.Info("=============");
-            logger.Info(data);
-            logger.Info("=============");
             int ConfigurationOptions = (int)swInConfigurationOpts_e.swAllConfiguration;
             SolidWorks.Interop.sldworks.Attribute saveExporterAttribute =
                 CreateSWSaveAttribute(swApp, model, UrdfConfigurationSwAttributeName);
-
-            MessageBox.Show($"attribute is null: {saveExporterAttribute == null}");
             Parameter param = saveExporterAttribute.GetParameter("data");
             param.SetStringValue2(data, ConfigurationOptions, "");
             param = saveExporterAttribute.GetParameter("name");

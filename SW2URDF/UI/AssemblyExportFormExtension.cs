@@ -205,7 +205,6 @@ namespace SW2URDF.UI
             MimicJointComboBox.Items.AddRange(jointNames.ToArray());
             if (joint.Mimic != null && joint.Mimic.AreRequiredFieldsSatisfied())
             {
-                MessageBox.Show($"Checking true {joint.Mimic.JointName}");
                 ShowMimicControls(true);
                 MimicCheckBox.Checked = true;
                 MimicJointComboBox.SelectedIndex =
@@ -214,7 +213,6 @@ namespace SW2URDF.UI
             }
             else
             {
-                MessageBox.Show($"Checking false {joint.Mimic.JointName}");
                 ShowMimicControls(false);
                 MimicCheckBox.Checked = false;
             }
@@ -343,12 +341,10 @@ namespace SW2URDF.UI
 
             if (MimicCheckBox.Checked)
             {
-                MessageBox.Show("Checked");
                 Joint.Mimic.Update(MimicJointComboBox.Text, textBoxMimicMultiplier.Text, textBoxMimicOffset.Text);
             }
             else
             {
-                MessageBox.Show("Not Checked");
                 Joint.Mimic.Update("", "", "");
             }
         }
