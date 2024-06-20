@@ -343,6 +343,10 @@ namespace SW2URDF.UI
             {
                 Joint.Mimic.Update(MimicJointComboBox.Text, textBoxMimicMultiplier.Text, textBoxMimicOffset.Text);
             }
+            else
+            {
+                Joint.Mimic.Update("", "", "");
+            }
         }
 
         //Fills specifically the joint TreeView

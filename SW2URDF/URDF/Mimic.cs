@@ -24,12 +24,12 @@ namespace SW2URDF.URDF
         [DataMember]
         private readonly URDFAttribute MultiplierAttribute;
 
-        public double Multiplier
+        public double? Multiplier
         {
             get => (double)MultiplierAttribute.Value;
             set
             {
-                if (value.GetType() == typeof(double))
+                if (value.GetType() == typeof(double?))
                 {
                     MultiplierAttribute.Value = value;
                 }
@@ -39,12 +39,12 @@ namespace SW2URDF.URDF
         [DataMember]
         private readonly URDFAttribute OffsetAttribute;
 
-        public double Offset
+        public double? Offset
         {
             get => (double)OffsetAttribute.Value;
             set
             {
-                if (value.GetType() == typeof(double))
+                if (value.GetType() == typeof(double?))
                 {
                     OffsetAttribute.Value = value;
                 }
@@ -71,9 +71,32 @@ namespace SW2URDF.URDF
         /// <param name="offsetText"></param>
         public void Update(string mimicJointName, string multiplierText, string offsetText)
         {
-            JointName = mimicJointName;
-            MultiplierAttribute.SetDoubleValueFromString(multiplierText);
-            OffsetAttribute.SetDoubleValueFromString(offsetText);
+            if(JointName == "")
+            {
+                JointName = null;
+            }
+            else
+            {
+                JointName = mimicJointName;
+            }
+
+            if(multiplierText == "")
+            {
+                Multiplier = null;
+            }
+            else
+            {
+                MultiplierAttribute.SetDoubleValueFromString(multiplierText);
+            }
+
+            if(offsetText == "")
+            {
+                Offset = null;
+            }
+            else
+            {
+                OffsetAttribute.SetDoubleValueFromString(offsetText);
+            }
         }
 
         internal void FillBoxes(TextBox textBoxMimicMultiplier, TextBox textBoxMimicOffset)
