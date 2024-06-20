@@ -57,7 +57,7 @@ namespace SW2URDF.URDF
         public readonly SafetyController Safety;
 
         [DataMember(IsRequired = false)]
-        public readonly Mimic Mimic;
+        public Mimic Mimic;
 
         [DataMember]
         public string CoordinateSystemName;

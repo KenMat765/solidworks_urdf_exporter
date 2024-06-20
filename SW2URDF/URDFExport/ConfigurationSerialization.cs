@@ -339,6 +339,7 @@ namespace SW2URDF.URDFExport
                 FindSWSaveAttribute(model, name);
             if (existingAttribute != null)
             {
+                // return existingAttribute;
                 MessageBox.Show("exist");
                 existingAttribute.Delete(true);
                 // return existingAttribute;

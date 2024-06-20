@@ -15,10 +15,13 @@ namespace SW2URDF.URDF
             get => (string)JointNameAttribute.Value;
             set
             {
+                /*
                 if (value.GetType() == typeof(string))
                 {
                     JointNameAttribute.Value = value;
                 }
+                */
+                JointNameAttribute.Value = value;
             }
         }
 
@@ -30,10 +33,13 @@ namespace SW2URDF.URDF
             get => (double)MultiplierAttribute.Value;
             set
             {
+                /*
                 if (value.GetType() == typeof(double?))
                 {
                     MultiplierAttribute.Value = value;
                 }
+                */
+                MultiplierAttribute.Value = value;
             }
         }
 
@@ -45,10 +51,13 @@ namespace SW2URDF.URDF
             get => (double)OffsetAttribute.Value;
             set
             {
+                /*
                 if (value.GetType() == typeof(double?))
                 {
                     OffsetAttribute.Value = value;
                 }
+                */
+                OffsetAttribute.Value = value;
             }
         }
 
@@ -72,7 +81,7 @@ namespace SW2URDF.URDF
         /// <param name="offsetText"></param>
         public void Update(string mimicJointName, string multiplierText, string offsetText)
         {
-            if(JointName == "")
+            if(mimicJointName == "")
             {
                 JointName = null;
             }
@@ -104,6 +113,11 @@ namespace SW2URDF.URDF
         {
             textBoxMimicMultiplier.Text = MultiplierAttribute.GetTextFromDoubleValue();
             textBoxMimicOffset.Text = OffsetAttribute.GetTextFromDoubleValue();
+        }
+
+        public override void WriteURDF(XmlWriter writer)
+        {
+            base.WriteURDF(writer);
         }
     }
 }

@@ -343,10 +343,12 @@ namespace SW2URDF.UI
 
             if (MimicCheckBox.Checked)
             {
+                MessageBox.Show("Checked");
                 Joint.Mimic.Update(MimicJointComboBox.Text, textBoxMimicMultiplier.Text, textBoxMimicOffset.Text);
             }
             else
             {
+                MessageBox.Show("Not Checked");
                 Joint.Mimic.Update("", "", "");
             }
         }
