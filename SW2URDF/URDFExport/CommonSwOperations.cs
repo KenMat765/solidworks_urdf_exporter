@@ -128,6 +128,31 @@ namespace SW2URDF.URDFExport
             model.ShowComponent2();
         }
 
+        //Shows the components in the list and its' children. Useful for exporting STLs
+        public static void ShowComponentsRecursive(ModelDoc2 model, List<Component2> components)
+        {
+            foreach (Component2 component in components)
+            {
+                int children_count = component.IGetChildrenCount();
+                if (children_count > 0)
+                {
+                    object[] child_objects = component.GetChildren();
+                    List<Component2> child_components = new List<Component2>();
+                    foreach(Component2 comp in child_objects)
+                    {
+                        child_components.Add(comp);
+                    }
+                    ShowComponentsRecursive(model, child_components);
+                }
+                else
+                {
+                    logger.Info($"Show component: {component.Name2}");
+                    List<Component2> component_list = new List<Component2>(){component};
+                    ShowComponents(model, component_list);
+                }
+            }
+        }
+
         //Hides the components from a list
         public static void HideComponents(ModelDoc2 model, List<Component2> components)
         {

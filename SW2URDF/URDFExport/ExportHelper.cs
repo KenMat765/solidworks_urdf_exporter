@@ -351,7 +351,7 @@ namespace SW2URDF.URDFExport
 
             logger.Info(link.Name + ": Reference geometry name " + names["component"]);
 
-            CommonSwOperations.ShowComponents(ActiveSWModel, link.SWComponents);
+            CommonSwOperations.ShowComponentsRecursive(ActiveSWModel, link.SWComponents);
 
             int saveOptions = (int)swSaveAsOptions_e.swSaveAsOptions_Silent |
                 (int)swSaveAsOptions_e.swSaveAsOptions_Copy;
@@ -439,8 +439,7 @@ namespace SW2URDF.URDFExport
 
             logger.Info(link.Name + ": Reference geometry name " + names["component"]);
 
-            CommonSwOperations.ShowComponents(ActiveSWModel, link.SWComponents);
-
+            CommonSwOperations.ShowComponentsRecursive(ActiveSWModel, link.SWComponents);
             int saveOptions = (int)swSaveAsOptions_e.swSaveAsOptions_Silent |
                 (int)swSaveAsOptions_e.swSaveAsOptions_Copy;
             SetLinkSpecificSTLPreferences(names["geo"], link.STLQualityFine, ActiveDoc);
