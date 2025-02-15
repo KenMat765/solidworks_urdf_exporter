@@ -401,7 +401,7 @@ namespace SW2URDF.URDFExport
                 {
                     logger.Info("Localizing Link : " + coordsysName);
                     Matrix<double> GlobalTransform = MathOps.GetTransformation(coordSysTransform);
-                    LocalizeLink(link, GlobalTransform);
+                    LocalizeLink(link, GlobalTransform, true);
                 }
                 else
                 {

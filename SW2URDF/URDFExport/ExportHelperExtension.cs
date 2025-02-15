@@ -112,7 +112,8 @@ namespace SW2URDF.URDFExport
 
         //This is only used by the Part Exporter, but it localizes the link to the Origin_global
         // coordinate system
-        private static void LocalizeLink(Link Link, Matrix<double> GlobalTransform)
+        // OnlyVisualAndCollision: Option for exporting in 3dxml format.
+        private static void LocalizeLink(Link Link, Matrix<double> GlobalTransform, bool OnlyVisualAndCollision = false)
         {
             Matrix<double> GlobalTransformInverse = GlobalTransform.Inverse();
             Matrix<double> linkCoMTransform = MathOps.GetTranslation(Link.Inertial.Origin.GetXYZ());
@@ -139,13 +140,16 @@ namespace SW2URDF.URDFExport
             Matrix<double> linkLocalMomentInertia =
                 GlobalRotMat * linkGlobalMomentInertia * GlobalRotMat.Transpose();
 
-            Link.Inertial.Origin.SetXYZ(MathOps.GetXYZ(localLinkCoMTransform));
-            Link.Inertial.Origin.SetRPY(new double[] { 0, 0, 0 });
+            if (!OnlyVisualAndCollision)
+            { 
+                Link.Inertial.Origin.SetXYZ(MathOps.GetXYZ(localLinkCoMTransform));
+                Link.Inertial.Origin.SetRPY(new double[] { 0, 0, 0 });
 
-            // Wait are you saying that even though the matrix was trasposed from column major
-            // order, you are writing it in row-major order here. Yes, yes I am.
-            double[] moment = linkLocalMomentInertia.ToRowMajorArray();
-            Link.Inertial.Inertia.SetMomentMatrix(moment);
+                // Wait are you saying that even though the matrix was trasposed from column major
+                // order, you are writing it in row-major order here. Yes, yes I am.
+                double[] moment = linkLocalMomentInertia.ToRowMajorArray();
+                Link.Inertial.Inertia.SetMomentMatrix(moment);
+            }
 
             Link.Collision.Origin.SetXYZ(MathOps.GetXYZ(localCollisionTransform));
             Link.Collision.Origin.SetRPY(MathOps.GetRPY(localCollisionTransform));
