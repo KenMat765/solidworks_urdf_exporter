@@ -415,64 +415,69 @@ namespace SW2URDF.URDFExport
 
             child.Joint.Parent.Name = parent.Name;
             child.Joint.Child.Name = child.Name;
-            if (child.isFixedFrame)
-            {
-                axisName = "";
-                jointType = "fixed";
-                child.Joint.Type = jointType;
-            }
-            else if (coordSysName == "Automatically Generate" ||
-                axisName == "Automatically Generate" || jointType == "Automatically Detect")
-            {
-                // We have to estimate the joint if the user specifies automatic for either the
-                // reference coordinate system, the reference axis or the joint type.
-                EstimateGlobalJointFromComponents(parent, child);
-                bool autoGenerateError = (
-                    child.Joint.Origin.X == 0.0 && child.Joint.Origin.Y == 0.0 && child.Joint.Origin.Z == 0.0 &&
-                    child.Joint.Origin.Roll == 0.0 && child.Joint.Origin.Pitch == 0.0 && child.Joint.Origin.Yaw == 0.0);
 
-                if (autoGenerateError)
+            // Run only when components are selected, because an error will occur if none is selected
+            if (child.SWMainComponent != null)
+            { 
+                if (child.isFixedFrame)
                 {
-                    ExportErrorWhy = string.Format("Inferring the joint geometry failed for the joint {0} " +
-                        "from link {1} to {2} failed. Check that the mates have not fully defined the " +
-                        "components in link {1} and that there is exactly one degree of freedom.",
-                        child.Joint.Name, child.Name, parent.Name);
-                    return false;
+                    axisName = "";
+                    jointType = "fixed";
+                    child.Joint.Type = jointType;
                 }
-            }
-
-            if (coordSysName == "Automatically Generate")
-            {
-                child.Joint.CoordinateSystemName = "Origin_" + child.Joint.Name;
-                ActiveSWModel.ClearSelection2(true);
-                int i = 2;
-                while (ActiveSWModel.Extension.SelectByID2(
-                    child.Joint.CoordinateSystemName, "COORDSYS", 0, 0, 0, false, 0, null, 0))
+                else if (coordSysName == "Automatically Generate" ||
+                    axisName == "Automatically Generate" || jointType == "Automatically Detect")
                 {
+                    // We have to estimate the joint if the user specifies automatic for either the
+                    // reference coordinate system, the reference axis or the joint type.
+                    EstimateGlobalJointFromComponents(parent, child);
+                    bool autoGenerateError = (
+                        child.Joint.Origin.X == 0.0 && child.Joint.Origin.Y == 0.0 && child.Joint.Origin.Z == 0.0 &&
+                        child.Joint.Origin.Roll == 0.0 && child.Joint.Origin.Pitch == 0.0 && child.Joint.Origin.Yaw == 0.0);
+
+                    if (autoGenerateError)
+                    {
+                        ExportErrorWhy = string.Format("Inferring the joint geometry failed for the joint {0} " +
+                            "from link {1} to {2} failed. Check that the mates have not fully defined the " +
+                            "components in link {1} and that there is exactly one degree of freedom.",
+                            child.Joint.Name, child.Name, parent.Name);
+                        return false;
+                    }
+                }
+
+                if (coordSysName == "Automatically Generate")
+                {
+                    child.Joint.CoordinateSystemName = "Origin_" + child.Joint.Name;
                     ActiveSWModel.ClearSelection2(true);
-                    child.Joint.CoordinateSystemName =
-                        "Origin_" + child.Joint.Name + i.ToString();
-                    i++;
+                    int i = 2;
+                    while (ActiveSWModel.Extension.SelectByID2(
+                        child.Joint.CoordinateSystemName, "COORDSYS", 0, 0, 0, false, 0, null, 0))
+                    {
+                        ActiveSWModel.ClearSelection2(true);
+                        child.Joint.CoordinateSystemName =
+                            "Origin_" + child.Joint.Name + i.ToString();
+                        i++;
+                    }
+
+                    CreateRefOrigin(child.Joint);
                 }
 
-                CreateRefOrigin(child.Joint);
-            }
-
-            if (axisName == "Automatically Generate")
-            {
-                child.Joint.AxisName = "Axis_" + child.Joint.Name;
-                ActiveSWModel.ClearSelection2(true);
-                int i = 2;
-                while (ActiveSWModel.Extension.SelectByID2(
-                    child.Joint.AxisName, "AXIS", 0, 0, 0, false, 0, null, 0))
+                if (axisName == "Automatically Generate")
                 {
+                    child.Joint.AxisName = "Axis_" + child.Joint.Name;
                     ActiveSWModel.ClearSelection2(true);
-                    child.Joint.AxisName = "Axis_" + child.Joint.Name + i.ToString();
-                    i++;
-                }
-                if (child.Joint.Type != "fixed")
-                {
-                    CreateRefAxis(child.Joint);
+                    int i = 2;
+                    while (ActiveSWModel.Extension.SelectByID2(
+                        child.Joint.AxisName, "AXIS", 0, 0, 0, false, 0, null, 0))
+                    {
+                        ActiveSWModel.ClearSelection2(true);
+                        child.Joint.AxisName = "Axis_" + child.Joint.Name + i.ToString();
+                        i++;
+                    }
+                    if (child.Joint.Type != "fixed")
+                    {
+                        CreateRefAxis(child.Joint);
+                    }
                 }
             }
 

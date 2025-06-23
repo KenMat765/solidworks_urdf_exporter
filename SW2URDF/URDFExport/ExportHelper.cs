@@ -294,47 +294,59 @@ namespace SW2URDF.URDFExport
                 }
             }
 
-            // Create the mesh filenames. SolidWorks likes to use / but that will get messy in filenames so use _ instead
-            string linkName = link.Name.Replace('/', '_');
-            string meshFilename = package.MeshesDirectory + linkName;
-            string windowsMeshFileName = package.WindowsMeshesDirectory + linkName;
-            switch(meshFormat)
+            // Only export the mesh file if the component is selected as a link
+            if (link.SWComponents.Count > 0)
             {
-                case MeshExportFormat.STL:
-                    meshFilename += ".STL";
-                    windowsMeshFileName += ".STL";
-                    break;
-
-                case MeshExportFormat.THREEDXML:
-                    meshFilename += ".3dxml";
-                    windowsMeshFileName += ".3dxml";
-                    break;
-
-                default:
-                    meshFilename += ".STL";
-                    windowsMeshFileName += ".STL";
-                    break;
-            }
-            // Export STL
-            if (exportSTL)
-            {
+                // Create the mesh filenames. SolidWorks likes to use / but that will get messy in filenames so use _ instead
+                string linkName = link.Name.Replace('/', '_');
+                string meshFilename = package.MeshesDirectory + linkName;
+                string windowsMeshFileName = package.WindowsMeshesDirectory + linkName;
                 switch (meshFormat)
                 {
                     case MeshExportFormat.STL:
-                        SaveSTL(link, windowsMeshFileName);
+                        meshFilename += ".STL";
+                        windowsMeshFileName += ".STL";
                         break;
 
                     case MeshExportFormat.THREEDXML:
-                        Save3dxml(link, windowsMeshFileName);
+                        meshFilename += ".3dxml";
+                        windowsMeshFileName += ".3dxml";
                         break;
 
                     default:
-                        SaveSTL(link, windowsMeshFileName);
+                        meshFilename += ".STL";
+                        windowsMeshFileName += ".STL";
                         break;
                 }
+                // Export STL
+                if (exportSTL)
+                {
+                    switch (meshFormat)
+                    {
+                        case MeshExportFormat.STL:
+                            SaveSTL(link, windowsMeshFileName);
+                            break;
+
+                        case MeshExportFormat.THREEDXML:
+                            Save3dxml(link, windowsMeshFileName);
+                            break;
+
+                        default:
+                            SaveSTL(link, windowsMeshFileName);
+                            break;
+                    }
+                }
+                link.Visual.Geometry.Mesh.Filename = meshFilename;
+                link.Collision.Geometry.Mesh.Filename = meshFilename;
             }
-            link.Visual.Geometry.Mesh.Filename = meshFilename;
-            link.Collision.Geometry.Mesh.Filename = meshFilename;
+
+            // // Visual and Collision are ignored when no component is selected
+            else
+            {
+                link.Inertial = null;
+                link.Visual = null;
+                link.Collision = null;
+            }
         }
 
         private void Save3dxml(Link link, string windowsMeshFilename)
